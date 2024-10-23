@@ -2,7 +2,6 @@
     "Channels": [
         "channel1"
     ],
-    "device123":["11","22","33"],
     "user_config": {
         "local_ip": "192.168.1.51",
         "group_ip": "229.0.0.1",
