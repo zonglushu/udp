@@ -1,6 +1,7 @@
 {
     "Channels": [
-        "channel1"
+        "channel1",
+        "channel2"
     ],
     "user_config": {
         "local_ip": "192.168.1.51",
