@@ -34,7 +34,7 @@ struct PortInfo
     PortInfo(int vl_id)
         : vl_id(vl_id), attributes() {}
 };
-
+// 设备的服务数据
 struct ServiceData
 {
 
@@ -44,11 +44,6 @@ struct ServiceData
     char bus_type[2] = {0};
     char udp_port_src[2] = {0};
     char udp_port_dst[2] = {0};
-};
-
-struct DeviceData
-{
-    char mac[6] = {0};
 };
 
 // 设备数据：描述一个设备的基本信息
@@ -65,6 +60,24 @@ struct DeviceData
 
 // 设备的映射：设备的id -> 设备信息
 using DeviceMap = std::unordered_map<int, DeviceData>;
+
+struct ParsingContext
+{
+    std::unordered_map<int, PortInfo> input_map;
+    std::unordered_map<int, PortInfo> output_map;
+    int current_port_value = -1;
+    int current_vl_id = -1;
+    bool is_input = false;
+    bool in_define_section = false; // 标记是否在定义部分
+
+    void reset()
+    {
+        current_port_value = -1;
+        current_vl_id = -1;
+        is_input = false;
+        in_define_section = false;
+    }
+};
 
 // 设备配置类
 // 这个是要管理所有的设备信息

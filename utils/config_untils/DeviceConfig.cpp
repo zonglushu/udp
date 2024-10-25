@@ -15,6 +15,7 @@ namespace fs = boost::filesystem;
 DeviceConfig &
 DeviceConfig::getInstance(const string &filename)
 {
+    
 }
 
 //解析端口信息，这里面应该有很多的.h文件，
@@ -30,6 +31,8 @@ bool DeviceConfig::isValidHeaderFile(const fs::path &file, const std::string &se
            file.extension() == ".h" &&
            file.filename().string().find(searchString) != std::string::npos;
 }
+
+
 
 vector<fs::path> DeviceConfig::getPortInfoFilePath(const string &dirPath, const string &searchString)
 {

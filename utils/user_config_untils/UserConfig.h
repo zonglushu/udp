@@ -11,18 +11,18 @@ using namespace rapidjson;
 
 
 using namespace std;
-class Config
+class UserConfig
 {
 public:
-    static Config &getInstance(const string &filename); // 获取单例实例
+    static UserConfig &getInstance(const string &filename); // 获取单例实例
     void load(const string &filename); // 从文件加载配置
 
     template <typename T>
     T get(const string &path) const; // 获取配置项的值
     void print() const;                   // 打印所有配置项
     void validateHasMember(initializer_list<string> keys); //校验多项属性是否存在
-    SubConfig getObject(const std::string &path); // 获取嵌套对象
-    vector<SubConfig> getArray(const std::string &key) const;
+    SubUserConfig getObject(const std::string &path); // 获取嵌套对象
+    vector<SubUserConfig> getArray(const std::string &key) const;
 
 private:
     Document document;           // RapidJSON 文档
@@ -33,7 +33,7 @@ private:
 
 //供第一级调用
 template <typename T>
-T Config::get(const std::string &path) const
+T UserConfig::get(const std::string &path) const
 {
     if (!document.HasMember(path.c_str()))
     {

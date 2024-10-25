@@ -1,5 +1,5 @@
-#ifndef SUBCONFIG_H
-#define SUBCONFIG_H
+#ifndef SubUserConfig_H
+#define SubUserConfig_H
 #include <vector>
 #include <memory>
 #include <string>
@@ -13,10 +13,10 @@
 using namespace std;
 using namespace rapidjson;
 
-class SubConfig
+class SubUserConfig
 {
 public:
-    SubConfig(const rapidjson::Value &value) : value_(value) {}
+    SubUserConfig(const rapidjson::Value &value) : value_(value) {}
 
     
     template <typename T>
@@ -46,30 +46,30 @@ public:
     }
 
     // 获取嵌套对象，返回智能指针
-    SubConfig getObject(const std::string &path)
+    SubUserConfig getObject(const std::string &path)
     {
         if (!value_.HasMember(path.c_str()) || !value_[path.c_str()].IsObject())
         {
             throw std::runtime_error("Key not found or not an object: " + path);
         }
-        return  SubConfig(value_[path.c_str()]);
-        // std::make_unique<SubConfig>(document[path.c_str()]); // 返回智能指针
+        return  SubUserConfig(value_[path.c_str()]);
+        // std::make_unique<SubUserConfig>(document[path.c_str()]); // 返回智能指针
     }
 
-    vector<SubConfig> getArray(const std::string &key) const
+    vector<SubUserConfig> getArray(const std::string &key) const
     {
         if (!value_.HasMember(key.c_str()) || !value_[key.c_str()].IsArray())
         {
             throw std::runtime_error("Key not found or not an array: " + key);
         }
 
-        std::vector<SubConfig> result;
+        std::vector<SubUserConfig> result;
         const Value &array = value_[key.c_str()];
         
         for (SizeType i = 0; i < array.Size(); ++i)
         {
             const Value &element = array[i]; // 获取引用
-            result.push_back(SubConfig(element)); // 使用智能指针
+            result.push_back(SubUserConfig(element)); // 使用智能指针
         }
         return result;
     }

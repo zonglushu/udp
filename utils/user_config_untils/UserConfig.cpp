@@ -9,20 +9,20 @@ using namespace std;
 
 
 // 静态成员初始化
-once_flag Config::initFlag;
-string Config::configFilename;
+once_flag UserConfig::initFlag;
+string UserConfig::configFilename;
 
-Config &Config::getInstance(const string &filename)
+UserConfig &UserConfig::getInstance(const string &filename)
 {
     configFilename = filename; // 记录文件名
-    static Config instance; // 局部静态变量，线程安全
+    static UserConfig instance; // 局部静态变量，线程安全
     instance.load(configFilename);
     return instance;
 }
 
 
 
-void Config::load(const string &filename)
+void UserConfig::load(const string &filename)
 {
     std::call_once(initFlag, [&]()
                    {
@@ -42,36 +42,36 @@ void Config::load(const string &filename)
 }
 
 // 获取嵌套对象
-SubConfig Config::getObject(const std::string &path)
+SubUserConfig UserConfig::getObject(const std::string &path)
 {
     if (!document.HasMember(path.c_str()) || !document[path.c_str()].IsObject())
     {
         throw std::runtime_error("Key not found or not an object: " + path);
     }
-    return SubConfig(document[path.c_str()]);
-    // std::make_unique<SubConfig>(document[path.c_str()]); // 返回智能指针
+    return SubUserConfig(document[path.c_str()]);
+    // std::make_unique<SubUserConfig>(document[path.c_str()]); // 返回智能指针
 }
 
-vector<SubConfig> Config::getArray(const std::string &key) const
+vector<SubUserConfig> UserConfig::getArray(const std::string &key) const
 {
     if (!document.HasMember(key.c_str()) || !document[key.c_str()].IsArray())
     {
         throw std::runtime_error("Key not found or not an array: " + key);
     }
 
-    std::vector<SubConfig> result;
+    std::vector<SubUserConfig> result;
     const Value &array = document[key.c_str()];
     
     for (SizeType i = 0; i < array.Size(); ++i)
     {
         const Value &element = array[i]; // 获取引用
 
-        result.push_back(SubConfig(element)); // 使用智能指针
+        result.push_back(SubUserConfig(element)); // 使用智能指针
     }
     return result;
 }
 
-void Config::validateHasMember(initializer_list<string> keys)
+void UserConfig::validateHasMember(initializer_list<string> keys)
 {
     for (const auto &key : keys)
     {
@@ -83,7 +83,7 @@ void Config::validateHasMember(initializer_list<string> keys)
 }
 
 
-void Config::print() const
+void UserConfig::print() const
 {
     for (auto &m : document.GetObject())
     {
