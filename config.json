@@ -6,21 +6,36 @@
         "local_ip": "192.168.1.51",
         "group_ip": "229.0.0.1",
         "group_port": 8888,
-        "device_1":[1, "ES138"],
-        "device_2":[2, "ES101"],
+        "devices_array": [
+            [
+                1222323,
+                "ES138"
+            ],
+            [
+                2,
+                "ES101"
+            ]
+        ],
+        "devices_obj": [
+            {
+                "tte_id": 1,
+                "name": "ES138"
+            },
+            {
+                "tte_id": 2,
+                "name": "ES101"
+            }
+        ],
         "log_directory": "./tte_log",
         "source_directory": "../es_table",
         "error_log_enable": true
     },
-
     "debug_config": {
-        "error_log_to_file":true,
+        "error_log_to_file": true,
         "error_log_output": true,
-
         "debug_log_enable": true,
         "debug_log_to_file": false,
         "debug_log_output": true,
-        
         "info_log_enable": true
     }
 }

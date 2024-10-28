@@ -10,6 +10,7 @@
 #include "../rapidjson/document.h"
 #include "../rapidjson/istreamwrapper.h"
 #include "../rapidjson/prettywriter.h"
+#define ITEM "item"
 using namespace std;
 using namespace rapidjson;
 
@@ -18,7 +19,6 @@ class SubUserConfig
 public:
     SubUserConfig(const rapidjson::Value &value) : value_(value) {}
 
-    
     template <typename T>
     T get(const std::string &key) const
     {
@@ -34,9 +34,8 @@ public:
         return item.Get<T>();
     }
 
-
     template <typename T>
-    T getItem() const
+    T getItem(const std::string &key = "") const
     {
         if (!value_.IsObject())
         {
@@ -52,23 +51,40 @@ public:
         {
             throw std::runtime_error("Key not found or not an object: " + path);
         }
-        return  SubUserConfig(value_[path.c_str()]);
+        return SubUserConfig(value_[path.c_str()]);
         // std::make_unique<SubUserConfig>(document[path.c_str()]); // 返回智能指针
     }
 
-    vector<SubUserConfig> getArray(const std::string &key) const
+    vector<SubUserConfig> getArray(const std::string &key = ITEM) const
     {
-        if (!value_.HasMember(key.c_str()) || !value_[key.c_str()].IsArray())
+
+        std::vector<SubUserConfig> result;
+        std::function<const Value &(const Value &)> action;
+
+        auto a = [&key](const Value &item) -> const Value &
+        { return item.GetArray(); };
+
+        auto b = [&key](const Value &item) -> const Value &
+        {         
+        if (!item.HasMember(key.c_str()) || !item[key.c_str()].IsArray())
         {
             throw std::runtime_error("Key not found or not an array: " + key);
         }
+        return item[key.c_str()]; };
 
-        std::vector<SubUserConfig> result;
-        const Value &array = value_[key.c_str()];
-        
+        const Value &array = (key.compare(ITEM) == 0) ? a(value_) : b(value_);
+        // auto action = (key.compare(ITEM) == 0) ? [const Value &item]
+        // { return . }
+        //          : (a < b) ? []
+        // { return "a is less than b"; }
+        //                    : []
+        // { return "a is equal to b"; };
+
+        // const Value &array = value_.GetArray();
+        // const Value &array = value_[key.c_str()];
         for (SizeType i = 0; i < array.Size(); ++i)
         {
-            const Value &element = array[i]; // 获取引用
+            const Value &element = array[i];          // 获取引用
             result.push_back(SubUserConfig(element)); // 使用智能指针
         }
         return result;

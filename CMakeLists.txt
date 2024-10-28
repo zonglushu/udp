@@ -39,7 +39,7 @@ add_subdirectory(xlnt)
 # 打包为动态库,cmake会自动往前拼接lib前缀
 add_library(myTTE SHARED ${TTE_LINUX_LIB_SRCS_LIB})  
 
-target_link_libraries(myTTE  xlnt)
+target_link_libraries(myTTE  xlnt ${Boost_LIBRARIES})
 
 # 可执行文件
 add_executable(udp_test udp_test.cpp hw_library_handle.cpp)

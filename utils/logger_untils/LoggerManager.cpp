@@ -41,7 +41,7 @@ void LoggerManager::InitEasyloggingPP(const std::string &absolute_path, const st
 
 void LoggerManager::setLogEnable(el::Level level, std::string &log_directory, bool enabled, const std::string &loggerName )
 {
-    Config &config = Config::getInstance("../config.json");
+    UserConfig &config = UserConfig::getInstance("../config.json");
     bool error_log_to_file_ = config.get<bool>("debug_config.error_log_to_file");
     bool debug_log_to_file_ = config.get<bool>("debug_config.debug_log_to_file");
 

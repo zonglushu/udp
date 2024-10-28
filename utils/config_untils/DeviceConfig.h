@@ -3,7 +3,7 @@
 #include <memory>
 #include <stdexcept>
 #include <xlnt/xlnt.hpp>
-
+#include <boost/filesystem.hpp>
 #include <mutex>
 
 using namespace std;
@@ -19,7 +19,7 @@ using namespace xlnt;
 #define IP_SRC_COL 5
 #define IP_DST_COL 12
 #define UDP_PORT_COL 3
-
+namespace fs = boost::filesystem;
 namespace utils
 {
     namespace deviceconfig
@@ -54,6 +54,7 @@ namespace utils
         // 设备数据：描述一个设备的基本信息
         struct DeviceData
         {
+            std::string device_name;
             char mac[6] = {0};                      // 设备 MAC 地址
             unordered_map<int, PortInfo> in_ports;  // 设备的端口信息   vl_id - 端口
             unordered_map<int, PortInfo> out_ports; // 设备的端口信息   vl_id - 端口
@@ -64,6 +65,10 @@ namespace utils
         };
 
         // 设备的映射：设备的id -> 设备信息
+        // excel表和.h文件中没有设备的id,也就是系统初始化解析所有设备的信息时，并没有设备的id，
+        // 到解析用户数据的时候，只有用户的几个设备的tteid，那也就可能是，只有用户的那几个设备之间可以互相通信。
+        // 那还需要加载全部设备的信息嘛，感觉好像这个es_table是不是数据库？
+        // 那也就是让解析用户配置后，将数据信息存入到DeviceMap中。
         using DeviceMap = std::unordered_map<int, DeviceData>;
         // 解析端口文件时，所需要的上下文信息
         struct ParsingPortFileContext
@@ -106,7 +111,9 @@ namespace utils
             ParsingPortFileContext context_;
 
             // 解析端口数据-解析.h文件
-            int parsePortInfo(const std::string &filename);
+            int parsePortInfoFile(const std::string &filename);
+            int HFileParser(const std::string &filename);
+
             // 解析设备数据和服务数据-解析excel
             int parseExcel(workbook wb);
             bool isValidHeaderFile(const fs::path &file, const std::string &searchString);
@@ -116,6 +123,7 @@ namespace utils
             void handlePortId(const std::string &value);
             void initHandlers();
             void handleLine(const std::string &line);
+            void storeAttribute(const std::string &key, const std::string &value);
         };
     }
 }

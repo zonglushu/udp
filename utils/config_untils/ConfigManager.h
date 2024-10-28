@@ -5,6 +5,7 @@
 #include <memory>
 #include <stdexcept>
 
+using namespace utils::deviceconfig;
 // 配置管理器
 class ConfigManager
 {

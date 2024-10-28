@@ -5,8 +5,6 @@
 #include "rapidjson/istreamwrapper.h"
 #include "rapidjson/prettywriter.h"
 #include "tte_linux_lib.h"
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
 #include "user_config_untils/UserConfig.h"
 #include "logger_untils/LoggerManager.h"
 
@@ -47,7 +45,7 @@ namespace hw_library
         {
             std::string str;
 
-            Config &config = Config::getInstance(config_file);
+            UserConfig &config = UserConfig::getInstance(config_file);
 
             LOG(INFO) << "My first info log using default logger";
 
@@ -76,11 +74,11 @@ namespace hw_library
             // LoggerManager::setLogToFile(el::Level::Debug, config.get<bool>("debug_config.debug_log_to_file"));
             // LoggerManager::setLogToFile(el::Level::Error, config.get<bool>("debug_config.error_log_to_file"));
 
-            SubConfig group_port = config.getObject("user_config");
+            SubUserConfig group_port = config.getObject("user_config");
 
             config.validateHasMember({"Channels", "user_config", "debug_config"});
 
-            vector<SubConfig> channels = config.getArray("Channels");
+            vector<SubUserConfig> channels = config.getArray("Channels");
             for (size_t i = 0; i < channels.size(); i++)
             {
                 /* code */
@@ -97,11 +95,11 @@ namespace hw_library
 
             
 
-           SubConfig user_config= config.getObject("user_config");
-           SubConfig debug_config = config.getObject("debug_config");
+           SubUserConfig user_config= config.getObject("user_config");
+           SubUserConfig debug_config = config.getObject("debug_config");
 ;
 
-            user_config.validateHasMember({"local_ip", "group_ip", "group_port", "device_1", "device_2",
+            user_config.validateHasMember({"local_ip", "group_ip", "group_port", 
                                             "log_directory", "source_directory", "error_log_enable"});
 
 
@@ -115,16 +113,20 @@ namespace hw_library
             group_ip_ = user_config.get<const char *>("group_ip");
             group_port_ = user_config.get<int>("group_port");
 
-            
+            //[[1,2],[3,4]]
+            //[1,2]
+            // device.getItem<auto>();
+            // [1,2]
+         
+            cout << user_config.getArray("devices_obj")[0].get<const char *>("name") << endl;
+            cout << user_config.getArray("devices_array")[0].getItem<int>()<<endl;
+            // device_1_ = user_config.getArray("device_1")[1].getItem<const char *>();
+            // device_2_ = user_config.getArray("device_2")[1].getItem<const char *>();
 
+            // tte_index_1_ = user_config.getArray("device_1")[0].getItem<int>();
+            // tte_index_2_ = user_config.getArray("device_2")[0].getItem<int>();
 
-            device_1_ = user_config.getArray("device_1")[1].getItem<const char *>();
-            device_2_ = user_config.getArray("device_2")[1].getItem<const char *>();
-
-            tte_index_1_ = user_config.getArray("device_1")[0].getItem<int>();
-            tte_index_2_ = user_config.getArray("device_2")[0].getItem<int>();
-
-            log_directory_=user_config.get<const char *>("log_directory");
+            log_directory_ = user_config.get<const char *>("log_directory");
             source_directory_ = user_config.get<const char *>("source_directory");
             error_log_enable_ = user_config.get<bool>("error_log_enable");
 
