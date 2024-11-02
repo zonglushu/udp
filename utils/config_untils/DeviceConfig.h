@@ -5,6 +5,8 @@
 #include <xlnt/xlnt.hpp>
 #include <boost/filesystem.hpp>
 #include <mutex>
+#include <fmt/core.h>
+#include <fmt/chrono.h>
 
 using namespace std;
 using namespace xlnt;
